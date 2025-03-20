@@ -9,8 +9,19 @@ const updateProfile = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: 'User profile updated successfully',
+    message: 'User profile has been updated successfully',
     data: updatedUser,
+  });
+});
+
+const updateSocialLinks = catchAsync(async (req, res) => {
+  const result = await UserService.updateSocialLinks(req.user!, req.body);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User social links has been updated successfully',
+    data: result,
   });
 });
 
@@ -54,6 +65,7 @@ const manageUserStatus = catchAsync(async (req, res) => {
 
 export const UserController = {
   updateProfile,
+  updateSocialLinks,
 
   getAllUsers,
   getSingleUser,

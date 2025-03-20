@@ -3,10 +3,11 @@ import { User } from './user.model';
 
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status-codes';
-import { IUser } from './user.interface';
+import { IUser, TSocialLinks } from './user.interface';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { searchableUsers } from '../car/car.constants';
 
+// UPDATE USER PROFILE
 const updateProfile = async (userData: JwtPayload, payload: IUser) => {
   const user = await User.isUserExistByEmail(userData.email);
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found');
@@ -15,6 +16,25 @@ const updateProfile = async (userData: JwtPayload, payload: IUser) => {
     new: true,
     runValidators: true,
   });
+
+  return updatedUser;
+};
+
+// UPDATE USER SOCIAL LINKS
+const updateSocialLinks = async (
+  userData: JwtPayload,
+  payload: TSocialLinks[],
+) => {
+  const updatedUser = await User.findOneAndUpdate(
+    { email: userData.email },
+    payload,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  if (!updatedUser) throw new AppError(httpStatus.NOT_FOUND, 'User not found');
 
   return updatedUser;
 };
@@ -58,6 +78,7 @@ const manageUserStatus = async (
 
 export const UserService = {
   updateProfile,
+  updateSocialLinks,
 
   getAllUsers,
   getSingleUser,
